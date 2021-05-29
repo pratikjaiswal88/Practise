@@ -1,0 +1,69 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
+public class Random {
+
+    public static void main(String[] args) {
+        System.out.println(findLatestDate("2020-03-11T00:00:00Z"));
+        System.out.println(findLatestDate("2021-02-01T00:00:00Z"));
+        System.out.println(findLatestDate("2020-11-06T00:00:00Z"));
+        System.out.println(findLatestDate("2019-10-28T00:00:00Z"));
+    }
+
+    private static String findLatestDate(String inputDate) {
+        List<Pair<String>> dateList = new ArrayList<>();
+        dateList.add(new Pair<>("2019-10-28T00:00:00Z", "2019-10-18T17:55:52Z"));
+        dateList.add(new Pair<>("2020-03-11T00:00:00Z", "2020-03-11T14:14:57Z"));
+        dateList.add(new Pair<>("2020-10-28T00:00:00Z", "2020-08-21T13:47:18Z"));
+        dateList.add(new Pair<>("2019-10-28T00:00:00Z", "2020-09-30T11:57:48Z"));
+        dateList.add(new Pair<>("2019-10-28T00:00:00Z", "2020-09-30T11:57:48Z"));
+        dateList.add(new Pair<>("2019-10-28T00:00:00Z", "2020-10-28T20:12:36Z"));
+        dateList.add(new Pair<>("2020-11-06T00:00:00Z", "2020-11-13T14:12:53Z"));
+        dateList.add(new Pair<>("2020-11-06T00:00:00Z", "2020-11-17T18:32:45Z"));
+        dateList.add(new Pair<>("2021-02-01T00:00:00Z", "2021-01-18T10:51:07Z"));
+
+        DateTimeFormatter formatter = DateTimeFormatter
+                .ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
+
+        Map<String, String> effectiveDateAndProcessedDateMapping = new HashMap<>();
+
+        for (Pair pair : dateList) {
+            if (effectiveDateAndProcessedDateMapping.containsKey(pair.getKey())) {
+
+                String oldDateInMap = effectiveDateAndProcessedDateMapping.get(pair.getKey());
+                LocalDate oldDate = LocalDate.parse(oldDateInMap, formatter);
+
+                String newDateInList = (String) pair.getValue();
+                LocalDate newDate = LocalDate.parse(newDateInList, formatter);
+
+                if (newDate.isAfter(oldDate)) {
+                    effectiveDateAndProcessedDateMapping.put((String) pair.getKey(), newDateInList);
+                }
+            } else {
+                effectiveDateAndProcessedDateMapping.put((String) pair.getKey(), (String) pair.getValue());
+            }
+        }
+
+        return effectiveDateAndProcessedDateMapping.get(inputDate);
+    }
+}
+
+
+class Pair<T> {
+    T key;
+    T value;
+
+    Pair(T key, T value) {
+        this.key = key;
+        this.value = value;
+    }
+
+    public T getKey() {
+        return key;
+    }
+
+    public T getValue() {
+        return value;
+    }
+}
